@@ -1,106 +1,102 @@
-import docx
-import PyPDF2
-import pandas as pd
 import pytesseract
 from PIL import Image
-import re
-import random
-from transformers import pipeline
+import docx
+import pandas as pd
+import PyPDF2
 
-# ====== SUMMARIZATION MODEL (LEBIH RINGAN) ====== #
-summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
-
-# ====== FUNGSIONALITAS FILE ====== #
-def read_file_content(uploaded_file):
-    """Baca isi file (txt, pdf, docx, csv, xlsx) dan kembalikan teks bersih"""
-    file_type = uploaded_file.type
-
-    if file_type == "text/plain":
-        return uploaded_file.read().decode("utf-8")
-
-    elif file_type == "application/pdf":
-        reader = PyPDF2.PdfReader(uploaded_file)
-        text = " ".join(page.extract_text() for page in reader.pages if page.extract_text())
-        return text.strip()
-
-    elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-        doc = docx.Document(uploaded_file)
-        return "\n".join([para.text for para in doc.paragraphs])
-
-    elif file_type in ["text/csv", "application/vnd.ms-excel",
-                       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]:
-        df = pd.read_csv(uploaded_file) if file_type == "text/csv" else pd.read_excel(uploaded_file)
+# ============ EKSTRAKSI TEKS ============ #
+def read_file_content(file):
+    """
+    Membaca teks dari file: .txt, .pdf, .docx, .csv, .xlsx
+    """
+    if file.name.endswith(".txt"):
+        return file.read().decode("utf-8")
+    
+    elif file.name.endswith(".pdf"):
+        reader = PyPDF2.PdfReader(file)
+        text = ""
+        for page in reader.pages:
+            text += page.extract_text() + "\n"
+        return text
+    
+    elif file.name.endswith(".docx"):
+        doc = docx.Document(file)
+        text = "\n".join([para.text for para in doc.paragraphs])
+        return text
+    
+    elif file.name.endswith(".csv"):
+        df = pd.read_csv(file)
         return df.to_string(index=False)
-
+    
+    elif file.name.endswith(".xlsx"):
+        df = pd.read_excel(file)
+        return df.to_string(index=False)
+    
     else:
-        return "Format file tidak didukung."
+        return ""
 
-def extract_text_from_image(image_file):
-    """Ekstrak teks dari file gambar"""
-    img = Image.open(image_file)
-    text = pytesseract.image_to_string(img, lang="ind")
-    return text.strip()
+def extract_text_from_image(file):
+    """
+    Mengekstrak teks dari gambar menggunakan pytesseract
+    """
+    img = Image.open(file)
+    text = pytesseract.image_to_string(img, lang='eng+ind')
+    return text
 
-# ====== FUNGSIONALITAS SUMMARIZATION ====== #
-def split_into_chunks(text, max_words=800):
-    """Pisahkan teks panjang jadi beberapa potongan agar cepat diproses model"""
-    sentences = re.split(r'(?<=[.!?]) +', text)
-    chunks, chunk = [], []
-    word_count = 0
-
-    for sentence in sentences:
-        words = sentence.split()
-        if word_count + len(words) <= max_words:
-            chunk.append(sentence)
-            word_count += len(words)
-        else:
-            chunks.append(" ".join(chunk))
-            chunk = [sentence]
-            word_count = len(words)
-    if chunk:
-        chunks.append(" ".join(chunk))
-    return chunks
-
+# ============ RINGKASAN TEKS ============ #
 def summarize_text(text):
-    """Ringkas teks panjang menjadi 1 paragraf, hasil lebih lengkap"""
-    if len(text.split()) < 50:
-        return "Teks terlalu pendek untuk diringkas."
+    """
+    Membagi teks panjang menjadi beberapa chunk agar model summarizer
+    bisa merangkum semua paragraf tanpa kehilangan info.
+    """
+    from transformers import pipeline
 
-    chunks = split_into_chunks(text)
+    summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+    
+    # Split teks menjadi paragraf
+    paragraphs = [p.strip() for p in text.split("\n") if p.strip()]
+    
     summaries = []
-    for chunk in chunks:
+    for para in paragraphs:
         try:
-            summary_chunk = summarizer(chunk, max_length=600, min_length=200, do_sample=False)[0]['summary_text']
+            summary_chunk = summarizer(para, max_length=250, min_length=50, do_sample=False)[0]['summary_text']
             summaries.append(summary_chunk)
         except Exception as e:
-            summaries.append(chunk)  # fallback kalau model error
+            summaries.append(para)  # fallback kalau error
 
-    # Gabungkan semua ringkasan menjadi 1 paragraf panjang
-    return " ".join(summaries).replace("\n", " ")
+    # Gabungkan semua ringkasan chunk
+    final_summary = "\n".join(summaries)
+    return final_summary
 
-# ====== FUNGSIONALITAS QUIZ ====== #
+# ============ GENERATE QUIZ ============ #
 def generate_quiz_from_text(text, num_questions=5):
-    """Buat latihan soal sederhana dari teks"""
-    sentences = [s for s in re.split(r'(?<=[.!?]) +', text) if len(s.split()) > 6]
-    if not sentences:
-        return []
+    """
+    Membuat pertanyaan pilihan ganda sederhana dari teks.
+    Implementasi dasar: memecah kalimat & mengambil kata penting.
+    """
+    import random
+    import re
 
-    selected = random.sample(sentences, min(num_questions, len(sentences)))
+    sentences = [s.strip() for s in re.split(r'[.!?]', text) if s.strip()]
     questions = []
 
-    for s in selected:
-        words = s.split()
-        missing_word = words[len(words)//2]
-        question_text = s.replace(missing_word, "_____")
-        # Buat opsi unik, maksimal 4
-        options = list({missing_word} | set(words[:5]))
-        if len(options) > 4:
-            options = options[:4]
+    for _ in range(min(num_questions, len(sentences))):
+        sentence = random.choice(sentences)
+        words = sentence.split()
+        if len(words) < 4:
+            continue
+        answer_word = random.choice(words)
+        question_text = sentence.replace(answer_word, "_____")
+        options = [answer_word]
+        # Buat 3 opsi palsu
+        for _ in range(3):
+            fake_word = random.choice(words)
+            if fake_word != answer_word:
+                options.append(fake_word)
         random.shuffle(options)
         questions.append({
             "question": question_text,
             "options": options,
-            "answer": missing_word
+            "answer": answer_word
         })
-
     return questions
