@@ -1,7 +1,13 @@
 streamlit
 pandas
+numpy
 PyPDF2
 python-docx
 pytesseract
 Pillow
+transformers
+torch
+sentencepiece
 openpyxl
+tqdm
+regex
