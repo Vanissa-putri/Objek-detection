@@ -1,84 +1,75 @@
-import os
-import io
-from typing import Union
+import docx
+from PyPDF2 import PdfReader
 from PIL import Image
 import pytesseract
+import io
+import re
 
-# File parsers
-from docx import Document
-from PyPDF2 import PdfReader
+# ======== Membaca isi file teks / pdf / docx ======== #
+def read_file_content(uploaded_file):
+    """Membaca isi file berdasarkan jenisnya"""
+    file_type = uploaded_file.type
 
-# Summarizer
-try:
-    from transformers import pipeline
-    summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
-except Exception:
-    summarizer = None
+    if file_type == "text/plain":
+        return uploaded_file.read().decode("utf-8")
+
+    elif file_type == "application/pdf":
+        pdf_reader = PdfReader(uploaded_file)
+        text = ""
+        for page in pdf_reader.pages:
+            text += page.extract_text() or ""
+        return text
+
+    elif file_type in [
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/msword"
+    ]:
+        doc = docx.Document(uploaded_file)
+        return "\n".join([para.text for para in doc.paragraphs])
+
+    else:
+        return "⚠️ Format file tidak didukung."
 
 
-# ============ FILE READER ============ #
-def read_file_content(file) -> str:
-    """Baca teks dari file txt, pdf, docx."""
-    filename = file.name.lower()
-
+# ======== Ekstraksi teks dari gambar ======== #
+def extract_text_from_image(uploaded_image):
+    """Mengubah gambar menjadi teks menggunakan OCR"""
     try:
-        if filename.endswith(".txt"):
-            return file.read().decode("utf-8")
-
-        elif filename.endswith(".pdf"):
-            reader = PdfReader(file)
-            text = ""
-            for page in reader.pages:
-                text += page.extract_text() or ""
-            return text
-
-        elif filename.endswith(".docx"):
-            doc = Document(file)
-            return "\n".join([p.text for p in doc.paragraphs])
-
-        else:
-            return ""
-    except Exception as e:
-        return f"Gagal membaca file: {e}"
-
-
-# ============ IMAGE OCR ============ #
-def extract_text_from_image(image_file) -> str:
-    """Ekstrak teks dari file gambar menggunakan OCR."""
-    try:
-        image = Image.open(image_file)
-        text = pytesseract.image_to_string(image, lang="eng+ind")
+        image = Image.open(uploaded_image)
+        text = pytesseract.image_to_string(image, lang="ind+eng")
         return text.strip()
     except Exception as e:
-        return f"Gagal mengenali teks dari gambar: {e}"
+        return f"⚠️ Gagal membaca teks dari gambar: {str(e)}"
 
 
-# ============ SUMMARIZATION ============ #
-def summarize_text(text: str, num_sentences: int = 5) -> str:
-    """Ringkas teks menggunakan model AI (transformers) jika tersedia."""
-    text = (text or "").strip()
+# ======== Fungsi ringkasan teks sederhana ======== #
+def summarize_text(text, max_sentences=5):
+    """Meringkas teks menjadi beberapa kalimat penting"""
+    if not text or len(text.split()) < 30:
+        return "Teks terlalu pendek untuk diringkas."
 
-    if not text:
-        return "Teks kosong atau tidak terbaca."
+    # Hilangkan karakter aneh & split jadi kalimat
+    text = re.sub(r'\s+', ' ', text)
+    sentences = re.split(r'(?<=[.!?]) +', text)
 
-    # Gunakan model AI jika tersedia
-    if summarizer:
-        try:
-            result = summarizer(text[:3000], max_length=180, min_length=50, do_sample=False)
-            summary = result[0]["summary_text"].strip()
-            return format_bullets(summary)
-        except Exception:
-            pass
+    # Hitung frekuensi kata (sederhana)
+    words = re.findall(r'\w+', text.lower())
+    freq = {}
+    for word in words:
+        if word not in freq:
+            freq[word] = 1
+        else:
+            freq[word] += 1
 
-    # Fallback metode sederhana
-    sentences = [s.strip() for s in text.split(".") if len(s.split()) > 3]
-    bullets = ["• " + s.capitalize() + "." for s in sentences[:num_sentences]]
-    return "\n".join(bullets) if bullets else "Tidak cukup teks untuk diringkas."
+    # Skor tiap kalimat berdasar kata penting
+    sentence_scores = {}
+    for sentence in sentences:
+        for word in sentence.lower().split():
+            if word in freq:
+                sentence_scores[sentence] = sentence_scores.get(sentence, 0) + freq[word]
 
+    # Ambil kalimat dengan skor tertinggi
+    ranked_sentences = sorted(sentence_scores, key=sentence_scores.get, reverse=True)
+    summary = " ".join(ranked_sentences[:max_sentences])
 
-# ============ HELPER ============ #
-def format_bullets(summary: str) -> str:
-    """Ubah paragraf ringkasan jadi poin-poin bullet."""
-    sentences = [s.strip() for s in summary.replace("\n", " ").split(". ") if s.strip()]
-    bullets = ["• " + s.capitalize() + "." for s in sentences]
-    return "\n".join(bullets)
+    return summary.strip()
