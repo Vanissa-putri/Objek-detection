@@ -23,21 +23,36 @@ def set_bg_image(image_file):
             background-position: center;
             background-attachment: fixed;
         }}
+
         /* ======= TEXT COLOR ======= */
         h1, h2, h3, h4, h5, h6, p, label, span {{
             color: white !important;
         }}
-        /* ======= SIDEBAR STYLE ======= */
+
+        /* ======= LINK STYLE ======= */
+        a {{
+            color: #00BFFF !important;  /* biru terang */
+            font-weight: bold;
+            text-decoration: none;
+        }}
+        a:hover {{
+            color: #1E90FF !important;
+            text-decoration: underline;
+        }}
+
+        /* ======= SIDEBAR ======= */
         [data-testid="stSidebar"] {{
-            background-color: rgba(0, 0, 0, 0.4);
+            background-color: rgba(0, 0, 0, 0.45);
             color: white;
         }}
         [data-testid="stSidebar"] label, [data-testid="stSidebar"] p {{
             color: white !important;
         }}
+
+        /* ======= INPUT AREA ======= */
         textarea, input, .stTextArea textarea {{
             color: black !important;
-            background-color: #ffffffaa !important;
+            background-color: #ffffffcc !important;
         }}
         </style>
         """
@@ -48,12 +63,9 @@ set_bg_image("assets/bg-litearn.jpg")
 # ============ HEADER ============ #
 col1, col2 = st.columns([1, 4])
 with col1:
-    st.image("assets/logo.png", width=120, use_container_width=False, caption="")
+    st.image("assets/logo.png", width=120, use_container_width=False)
 with col2:
-    st.markdown(
-        "<h1 style='color:white; margin-top:30px;'>LITEARN - Smart Learning Assistant</h1>",
-        unsafe_allow_html=True,
-    )
+    st.markdown("<h1 style='color:white; margin-top:30px;'>LITEARN - Smart Learning Assistant</h1>", unsafe_allow_html=True)
 st.markdown("<h3 style='color:white;'>Membantu mahasiswa memahami materi kuliah dengan cepat dan efisien 💡</h3>", unsafe_allow_html=True)
 
 # ============ SIDEBAR MENU ============ #
@@ -101,16 +113,16 @@ elif menu == "Bantuan":
     **Pertanyaan umum:**
     - File tidak terbaca? Pastikan formatnya `.txt`, `.pdf`, `.docx`, `.jpg`, atau `.png`.  
     - Hasil ringkasan kosong? Periksa apakah teks dalam file bisa disalin.  
-    - Masalah lain? Hubungi kami di menu **Kontak Kami**.
-    """)
+    - Masalah lain? Hubungi kami di menu [**Kontak Kami**](#kontak-kami).
+    """, unsafe_allow_html=True)
 
 elif menu == "Kontak Kami":
     st.header("📞 Hubungi Kami")
     st.markdown("""
-    📧 **Email:** litearn_ai@gmail.com  
-    🌐 **Website:** [https://litearn.streamlit.app](https://litearn.streamlit.app)  
-    💬 **Instagram:** [@litearn.ai](https://instagram.com/litearn.ai)
-    """)
+    📧 **Email:** <a href="mailto:litearn_ai@gmail.com">litearn_ai@gmail.com</a>  
+    🌐 **Website:** <a href="https://litearn.streamlit.app" target="_blank">https://litearn.streamlit.app</a>  
+    💬 **Instagram:** <a href="https://instagram.com/litearn.ai" target="_blank">@litearn.ai</a>
+    """, unsafe_allow_html=True)
 
 elif menu == "Tentang":
     st.header("ℹ️ Tentang LITEARN")
@@ -120,4 +132,4 @@ elif menu == "Tentang":
     Litearn dapat membaca dan meringkas teks dari dokumen maupun gambar  
     menjadi **poin-poin penting yang mudah dipahami**.
     """)
-    st.success("Dapat digunakan di perangkat mobile dan web dengan tampilan sederhana.")
+    st.success("Dari ringkasan jadi pemahaman.")
