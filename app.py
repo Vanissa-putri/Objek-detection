@@ -16,7 +16,7 @@ def set_bg_image(image_file):
     if os.path.exists(image_file):
         with open(image_file, "rb") as file:
             data = base64.b64encode(file.read()).decode()
-        bg_css = f"""
+        st.markdown(f"""
         <style>
         .stApp {{
             background-image: url("data:image/jpg;base64,{data}");
@@ -24,19 +24,40 @@ def set_bg_image(image_file):
             background-position: center;
             background-attachment: fixed;
         }}
+        /* Teks default putih agar terbaca di background gelap */
         h1, h2, h3, h4, h5, h6, p, label, span {{
             color: white !important;
         }}
+        /* Sidebar semi-transparan */
         [data-testid="stSidebar"] {{
             background-color: rgba(0, 0, 0, 0.5);
         }}
+        /* Kotak input teks */
         textarea, input {{
             color: black !important;
             background-color: #ffffffcc !important;
         }}
+        /* Kotak ringkasan / quiz khusus */
+        .summary-box {{
+            background-color: #ffffffcc;
+            color: black;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            white-space: pre-wrap;
+        }}
+        a.contact-link {{
+            color: white !important;
+            text-decoration: none;
+            font-weight: bold;
+        }}
+        a.contact-link:hover {{
+            color: #00BFFF !important;
+            text-decoration: underline;
+        }}
         </style>
-        """
-        st.markdown(bg_css, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
 set_bg_image("assets/bg-litearn.jpg")
 
@@ -85,22 +106,7 @@ if menu == "Ringkasan Materi":
         if st.button("🔍 Buat Ringkasan"):
             summary = summarize_text(text)
             st.subheader("🧾 Hasil Ringkasan:")
-            
-            # 🔹 tampilkan hasil ringkasan dalam kotak teks elegan
-            st.markdown(f"""
-            <div style="
-                background-color: #ffffffcc;
-                color: black;
-                padding: 15px;
-                border-radius: 10px;
-                border: 1px solid rgba(0,0,0,0.1);
-                box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-                white-space: pre-wrap;
-            ">
-            {summary}
-            </div>
-            """, unsafe_allow_html=True)
-
+            st.markdown(f'<div class="summary-box">{summary}</div>', unsafe_allow_html=True)
             st.info("✨ Ingin hasil ringkasan lebih akurat dan detail? Hubungi kami untuk fitur Premium!")
     else:
         st.info("Masukkan teks atau upload file terlebih dahulu.")
@@ -190,18 +196,6 @@ elif menu == "Pengaduan":
 elif menu == "Kontak Kami":
     st.header("📞 Hubungi Kami")
     st.markdown("""
-    <style>
-    a.contact-link {
-        color: white !important;
-        text-decoration: none;
-        font-weight: bold;
-    }
-    a.contact-link:hover {
-        color: #00BFFF !important;
-        text-decoration: underline;
-    }
-    </style>
-
     📧 **Email:** <a class="contact-link" href="mailto:litearn_ai@gmail.com">litearn_ai@gmail.com</a>  
     💬 **WhatsApp:** <a class="contact-link" href="https://wa.me/6282283292897" target="_blank">Chat Kami</a>  
     🌐 **Website:** <a class="contact-link" href="https://litearn.streamlit.app" target="_blank">litearn.streamlit.app</a>
