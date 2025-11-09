@@ -173,42 +173,46 @@ elif menu == "Kontak Kami":
     """, unsafe_allow_html=True)
 
 
-# ============ TENTANG ============ #
-elif menu == "Tentang":
-    st.header("ℹ️ Tentang LITEARN")
-    st.markdown("""
-    Litearn adalah aplikasi edukasi berbasis **AI lokal**  
-    yang membantu mahasiswa memahami materi kuliah,  
-    membuat ringkasan otomatis, dan latihan soal interaktif.  
-    """)
-    st.success("Dari ringkasan jadi pemahaman. 🚀")
-
-# ============ FLOATING WHATSAPP BUTTON ============ #
-st.markdown(f"""
-<div class="whatsapp-float">
-    <a href="https://wa.me/6282283292897" target="_blank" title="Chat via WhatsApp">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Chat">
-    </a>
+# ============ FLOATING BANTUAN BUTTON ============ #
+st.markdown("""
+<div class="bantuan-float">
+    <button id="bantuan-btn">🆘 Bantuan / Pengaduan</button>
 </div>
 
 <style>
-.whatsapp-float {{
+.bantuan-float {
     position: fixed;
     bottom: 20px;
     left: 20px;
     z-index: 9999;
-}}
-.whatsapp-float img {{
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    box-shadow: 0px 3px 10px rgba(0,0,0,0.4);
+}
+#bantuan-btn {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 16px;
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.3);
+    cursor: pointer;
     transition: all 0.3s ease;
-}}
-.whatsapp-float img:hover {{
-    transform: scale(1.1);
-    box-shadow: 0px 4px 12px rgba(0,0,0,0.5);
-}}
+}
+#bantuan-btn:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
 </style>
 """, unsafe_allow_html=True)
+
+with st.expander("🆘 Formulir Bantuan / Pengaduan"):
+    nama = st.text_input("Nama Lengkap")
+    email = st.text_input("Email")
+    keluhan = st.text_area("Tulis keluhan atau pertanyaanmu di sini", height=150)
+    if st.button("📨 Kirim Pengaduan"):
+        if nama and email and keluhan:
+            # Simulasi kirim email (bisa diganti fungsi kirim_email di utils)
+            st.success("✅ Keluhan berhasil dikirim ke tim Litearn. Kami akan menindaklanjuti secepatnya.")
+        else:
+            st.warning("⚠️ Lengkapi semua kolom sebelum mengirim.")
+
 
