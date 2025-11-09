@@ -183,11 +183,32 @@ elif menu == "Tentang":
     """)
     st.success("Dari ringkasan jadi pemahaman. 🚀")
 
-# ============ WHATSAPP FLOAT ============ #
-st.markdown("""
+# ============ FLOATING WHATSAPP BUTTON ============ #
+st.markdown(f"""
 <div class="whatsapp-float">
-    <a href="https://wa.me/6282283292897" target="_blank">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg">
+    <a href="https://wa.me/6282283292897" target="_blank" title="Chat via WhatsApp">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Chat">
     </a>
 </div>
+
+<style>
+.whatsapp-float {{
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 9999;
+}}
+.whatsapp-float img {{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.4);
+    transition: all 0.3s ease;
+}}
+.whatsapp-float img:hover {{
+    transform: scale(1.1);
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.5);
+}}
+</style>
 """, unsafe_allow_html=True)
+
