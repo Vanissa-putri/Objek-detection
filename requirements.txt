@@ -1,0 +1,4 @@
+streamlit>=1.20
+pandas
+transformers>=4.20  # optional (hanya kalau mau local summarization heavy)
+torch                # optional - diperlukan jika transformers dipakai
