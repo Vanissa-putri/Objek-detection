@@ -82,24 +82,14 @@ menu = st.sidebar.radio(
 # ============ RINGKASAN MATERI ============ #
 if menu == "Ringkasan Materi":
     st.header("📚 Ringkasan Materi")
-    st.markdown(
-        "<p>Unggah atau tempel materi kuliah lalu klik <b>Buat Ringkasan</b>.</p>",
-        unsafe_allow_html=True
-    )
+    st.markdown("<p>Unggah atau tempel materi kuliah lalu klik <b>Buat Ringkasan</b>.</p>", unsafe_allow_html=True)
 
-    source = st.radio(
-        "Sumber materi",
-        ["Tempel teks", "Upload file (.txt, .pdf, .docx, .csv, .xlsx, .jpg, .png)"]
-    )
-
+    source = st.radio("Sumber materi", ["Tempel teks", "Upload file (.txt, .pdf, .docx, .csv, .xlsx, .jpg, .png)"])
     text = ""
     if source == "Tempel teks":
         text = st.text_area("Tempel teks / artikel / bab buku di sini", height=250)
     else:
-        uploaded_file = st.file_uploader(
-            "Upload file",
-            type=["txt", "pdf", "docx", "csv", "xlsx", "jpg", "png"]
-        )
+        uploaded_file = st.file_uploader("Upload file", type=["txt", "pdf", "docx", "csv", "xlsx", "jpg", "png"])
         if uploaded_file:
             if uploaded_file.type.startswith("image/"):
                 st.info("📷 File gambar terdeteksi, sedang mengekstrak teks...")
@@ -136,7 +126,6 @@ if menu == "Ringkasan Materi":
             }});
             </script>
             """, unsafe_allow_html=True)
-
     else:
         st.info("Masukkan teks atau upload file terlebih dahulu.")
 
@@ -147,7 +136,6 @@ elif menu == "Latihan Soal":
 
     quiz_source = st.radio("Sumber materi", ["Tempel teks", "Upload file (.txt, .pdf, .docx, .csv, .xlsx, .jpg, .png)"])
     quiz_text = ""
-
     if quiz_source == "Tempel teks":
         quiz_text = st.text_area("Tempel materi di sini", height=250)
     else:
@@ -225,7 +213,8 @@ elif menu == "Pengaduan":
 elif menu == "Kontak Kami":
     st.header("📞 Hubungi Kami")
     st.markdown("""
-    📧 **Email:** <a class="contact-link" href="mailto:litearn_ai@gmail.com">litearn_ai@gmail.com</a>  
+    📧 **Email:** <a class="contact-link" href="mailto:litearnofficial@gmail.com">litearnofficial@gmail.com</a>  
+    📸 **Instagram:** <a class="contact-link" href="https://www.instagram.com/litearn.official" target="_blank">litearn.official</a>  
     💬 **WhatsApp:** <a class="contact-link" href="https://wa.me/6282283292897" target="_blank">Chat Kami</a>  
     🌐 **Website:** <a class="contact-link" href="https://litearn.streamlit.app" target="_blank">litearn.streamlit.app</a>
     """, unsafe_allow_html=True)
