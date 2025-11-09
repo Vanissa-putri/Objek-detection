@@ -83,18 +83,29 @@ menu = st.sidebar.radio(
     ]
 )
 
-# ============ RINGKASAN ============ #
+# ============ RINGKASAN MATERI ============ #
 if menu == "Ringkasan Materi":
     st.header("📚 Ringkasan Materi")
-    st.markdown("<p>Unggah atau tempel materi kuliah lalu klik <b>Buat Ringkasan</b>.</p>", unsafe_allow_html=True)
+    st.markdown(
+        "<p>Unggah atau tempel materi kuliah lalu klik <b>Buat Ringkasan</b>.</p>",
+        unsafe_allow_html=True
+    )
 
-    source = st.radio("Sumber materi", ["Tempel teks", "Upload file (.txt, .pdf, .docx, .csv, .xlsx, .jpg, .png)"])
+    # Pilih sumber materi
+    source = st.radio(
+        "Sumber materi",
+        ["Tempel teks", "Upload file (.txt, .pdf, .docx, .csv, .xlsx, .jpg, .png)"]
+    )
+
     text = ""
 
     if source == "Tempel teks":
         text = st.text_area("Tempel teks / artikel / bab buku di sini", height=250)
     else:
-        uploaded_file = st.file_uploader("Upload file", type=["txt", "pdf", "docx", "csv", "xlsx", "jpg", "png"])
+        uploaded_file = st.file_uploader(
+            "Upload file",
+            type=["txt", "pdf", "docx", "csv", "xlsx", "jpg", "png"]
+        )
         if uploaded_file:
             if uploaded_file.type.startswith("image/"):
                 st.info("📷 File gambar terdeteksi, sedang mengekstrak teks...")
@@ -107,12 +118,12 @@ if menu == "Ringkasan Materi":
             summary = summarize_text(text)
             st.subheader("🧾 Hasil Ringkasan:")
 
-            # 🔹 tampilkan hasil ringkasan dalam kotak dengan teks hitam
+            # Kotak ringkasan putih solid
             st.markdown(f"""
             <div style="
-                background-color: #ffffffcc;  /* putih transparan */
-                color: black;                /* teks hitam */
-                padding: 15px;
+                background-color: #ffffff;  /* putih solid */
+                color: black;               /* teks hitam */
+                padding: 20px;
                 border-radius: 10px;
                 border: 1px solid rgba(0,0,0,0.1);
                 box-shadow: 0 2px 6px rgba(0,0,0,0.2);
