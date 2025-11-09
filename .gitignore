@@ -1,1 +1,17 @@
+# Abaikan file database lokal
+data/usage.db
+
+# Abaikan cache Python
+__pycache__/
+*.pyc
+
+# Abaikan file environment (kalau nanti ada)
+.env
+
+# Abaikan folder Streamlit config
+.streamlit/
+
+# Abaikan file sistem (Windows/Mac)
+.DS_Store
+Thumbs.db
 
