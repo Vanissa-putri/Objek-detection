@@ -62,14 +62,21 @@ def split_into_chunks(text, max_words=800):
     return chunks
 
 def summarize_text(text):
-    """Ringkas teks cepat, hasil digabung menjadi 1 paragraf"""
-    if len(text.split()) < 50:
-        return "Teks terlalu pendek untuk diringkas."
+    """Ringkas teks cepat, gabungkan semua menjadi 1 paragraf panjang"""
+    if len(text.split()) < 20:
+        return text.strip()  # teks terlalu pendek → kembalikan apa adanya
 
-    chunks = split_into_chunks(text)
-    summaries = [summarizer(chunk, max_length=150, min_length=50, do_sample=False)[0]['summary_text'] for chunk in chunks]
+    chunks = split_into_chunks(text, max_words=800)
+    summaries = []
 
-    return " ".join(summaries)  # gabungkan menjadi 1 paragraf
+    for chunk in chunks:
+        result = summarizer(chunk, max_length=300, min_length=50, do_sample=False)
+        summaries.append(result[0]['summary_text'])
+
+    # Gabungkan semua ringkasan menjadi 1 paragraf panjang
+    final_summary = " ".join(summaries)
+    final_summary = re.sub(r'\s+', ' ', final_summary).strip()  # hapus spasi ganda / line break
+    return final_summary
 
 # ====== FUNGSIONALITAS QUIZ ====== #
 def generate_quiz_from_text(text, num_questions=5):
