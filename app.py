@@ -173,46 +173,25 @@ elif menu == "Kontak Kami":
     """, unsafe_allow_html=True)
 
 
-# ============ FLOATING BANTUAN BUTTON ============ #
-st.markdown("""
-<div class="bantuan-float">
-    <button id="bantuan-btn">🆘 Bantuan / Pengaduan</button>
-</div>
+# ============ PENGADUAN ============ #
+elif menu == "Pengaduan":
+    st.header("📩 Pengaduan & Masukan Pengguna")
+    st.markdown("""
+    Jika kamu mengalami kendala, bug, atau ingin memberi saran pengembangan aplikasi,
+    silakan isi formulir di bawah ini.  
+    Tim Litearn akan membaca setiap pesan yang masuk 💬
+    """)
 
-<style>
-.bantuan-float {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    z-index: 9999;
-}
-#bantuan-btn {
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 12px 20px;
-    font-size: 16px;
-    box-shadow: 0px 3px 10px rgba(0,0,0,0.3);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-#bantuan-btn:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
-}
-</style>
-""", unsafe_allow_html=True)
-
-with st.expander("🆘 Formulir Bantuan / Pengaduan"):
     nama = st.text_input("Nama Lengkap")
-    email = st.text_input("Email")
-    keluhan = st.text_area("Tulis keluhan atau pertanyaanmu di sini", height=150)
-    if st.button("📨 Kirim Pengaduan"):
-        if nama and email and keluhan:
-            # Simulasi kirim email (bisa diganti fungsi kirim_email di utils)
-            st.success("✅ Keluhan berhasil dikirim ke tim Litearn. Kami akan menindaklanjuti secepatnya.")
+    email = st.text_input("Email Aktif")
+    subjek = st.text_input("Subjek Pesan")
+    pesan = st.text_area("Isi Pesan atau Keluhan", height=150)
+
+    if st.button("Kirim Pesan"):
+        if nama and email and pesan:
+            # (Simulasi pengiriman)
+            st.success("✅ Pesan berhasil dikirim! Terima kasih atas masukannya 🙌")
         else:
-            st.warning("⚠️ Lengkapi semua kolom sebelum mengirim.")
+            st.warning("⚠️ Mohon isi semua kolom sebelum mengirim pesan.")
 
 
