@@ -106,7 +106,22 @@ if menu == "Ringkasan Materi":
         if st.button("🔍 Buat Ringkasan"):
             summary = summarize_text(text)
             st.subheader("🧾 Hasil Ringkasan:")
-            st.markdown(f'<div class="summary-box">{summary}</div>', unsafe_allow_html=True)
+
+            # 🔹 tampilkan hasil ringkasan dalam kotak dengan teks hitam
+            st.markdown(f"""
+            <div style="
+                background-color: #ffffffcc;  /* putih transparan */
+                color: black;                /* teks hitam */
+                padding: 15px;
+                border-radius: 10px;
+                border: 1px solid rgba(0,0,0,0.1);
+                box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+                white-space: pre-wrap;
+            ">
+            {summary}
+            </div>
+            """, unsafe_allow_html=True)
+
             st.info("✨ Ingin hasil ringkasan lebih akurat dan detail? Hubungi kami untuk fitur Premium!")
     else:
         st.info("Masukkan teks atau upload file terlebih dahulu.")
