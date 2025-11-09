@@ -24,20 +24,16 @@ def set_bg_image(image_file):
             background-position: center;
             background-attachment: fixed;
         }}
-        /* Teks default putih agar terbaca di background gelap */
         h1, h2, h3, h4, h5, h6, p, label, span {{
             color: white !important;
         }}
-        /* Sidebar semi-transparan */
         [data-testid="stSidebar"] {{
             background-color: rgba(0, 0, 0, 0.5);
         }}
-        /* Kotak input teks */
         textarea, input {{
             color: black !important;
             background-color: #ffffffcc !important;
         }}
-        /* Kotak ringkasan / quiz khusus */
         .summary-box {{
             background-color: #ffffffcc;
             color: black;
@@ -117,7 +113,7 @@ if menu == "Ringkasan Materi":
 
             st.subheader("🧾 Hasil Ringkasan:")
             st.markdown(f"""
-            <div id="summary-box" style="
+            <div style="
                 background-color: #ffffff;
                 color: black;
                 padding: 20px;
@@ -143,7 +139,6 @@ if menu == "Ringkasan Materi":
 
     else:
         st.info("Masukkan teks atau upload file terlebih dahulu.")
-
 
 # ============ LATIHAN SOAL ============ #
 elif menu == "Latihan Soal":
