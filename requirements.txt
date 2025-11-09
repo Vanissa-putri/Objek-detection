@@ -1,11 +1,7 @@
 streamlit
 pytesseract
 Pillow
-pdfplumber
-python-docx
-docx2txt
-pandas
-numpy
-openai
 transformers
 torch
+PyPDF2
+python-docx
