@@ -91,15 +91,12 @@ if menu == "Ringkasan Materi":
         unsafe_allow_html=True
     )
 
-    # Pilih sumber materi
     source = st.radio(
         "Sumber materi",
         ["Tempel teks", "Upload file (.txt, .pdf, .docx, .csv, .xlsx, .jpg, .png)"]
     )
 
     text = ""
-
-    # Input teks atau upload file
     if source == "Tempel teks":
         text = st.text_area("Tempel teks / artikel / bab buku di sini", height=250)
     else:
@@ -114,28 +111,32 @@ if menu == "Ringkasan Materi":
             else:
                 text = read_file_content(uploaded_file)
 
-    # Proses ringkasan
     if text.strip():
         if st.button("🔍 Buat Ringkasan"):
             summary = summarize_text(text)
 
-            # Gabungkan menjadi 1 paragraf tanpa line break
-            summary_one_paragraph = " ".join(summary.split())
-
             st.subheader("🧾 Hasil Ringkasan:")
             st.markdown(f"""
             <div style="
-                background-color: #ffffff;  /* putih solid */
-                color: black;               /* teks hitam */
+                background-color: #ffffff;
+                color: black;
                 padding: 20px;
                 border-radius: 10px;
                 border: 1px solid rgba(0,0,0,0.1);
                 box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-                white-space: normal;
+                white-space: pre-wrap;
             ">
-            {summary_one_paragraph}
+            {summary}
             </div>
             """, unsafe_allow_html=True)
+
+            # Tombol copy / download ringkasan
+            st.download_button(
+                label="📋 Copy / Download Ringkasan",
+                data=summary,
+                file_name="ringkasan.txt",
+                mime="text/plain"
+            )
 
             st.info("✨ Ingin hasil ringkasan lebih akurat dan detail? Hubungi kami untuk fitur Premium!")
     else:
