@@ -70,7 +70,7 @@ def summarize_text(text):
     summaries = []
     for chunk in chunks:
         try:
-            summary_chunk = summarizer(chunk, max_length=250, min_length=100, do_sample=False)[0]['summary_text']
+            summary_chunk = summarizer(chunk, max_length=600, min_length=200, do_sample=False)[0]['summary_text']
             summaries.append(summary_chunk)
         except Exception as e:
             summaries.append(chunk)  # fallback kalau model error
