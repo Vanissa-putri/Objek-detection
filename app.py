@@ -3,7 +3,7 @@ from utils import (
     read_file_content,
     summarize_text,
     extract_text_from_image,
-    generate_quiz_from_text  # ✅ fungsi baru untuk latihan soal
+    generate_quiz_from_text
 )
 import base64
 import os
@@ -111,6 +111,9 @@ if menu == "Ringkasan Materi":
             summary = summarize_text(text)
             st.subheader("🧾 Hasil Ringkasan:")
             st.write(summary)
+            st.info("💡 Ingin hasil ringkasan lebih akurat dan lengkap? "
+                    "Hubungi kami untuk mengaktifkan fitur **Premium Summary** "
+                    "[Klik di sini](https://wa.me/6282283292897)")
     else:
         st.info("Masukkan teks atau upload file terlebih dahulu.")
 
@@ -136,26 +139,26 @@ elif menu == "Latihan Soal":
         if st.button("🎯 Buat Soal"):
             st.success("✅ Soal berhasil dibuat!")
             questions = generate_quiz_from_text(quiz_text)
-            score = 0
             user_answers = []
 
             for i, q in enumerate(questions):
                 st.markdown(f"**{i+1}. {q['question']}**")
-                answer = st.radio("Pilih jawaban:", q["options"], key=i)
+                answer = st.radio("Pilih jawaban:", q["options"], key=f"q{i}")
                 user_answers.append((answer, q["answer"]))
                 st.write("---")
 
             if st.button("📊 Lihat Hasil"):
-                correct = 0
+                correct = sum([1 for ans, correct_ans in user_answers if ans == correct_ans])
                 for idx, (ans, correct_ans) in enumerate(user_answers):
                     if ans == correct_ans:
-                        correct += 1
                         st.success(f"Soal {idx+1}: Benar ✅")
                     else:
                         st.error(f"Soal {idx+1}: Salah ❌ (Jawaban benar: {correct_ans})")
 
                 score = int((correct / len(user_answers)) * 100)
                 st.markdown(f"### 🎓 Skor Akhir Kamu: **{score} / 100**")
+    else:
+        st.info("Masukkan teks atau upload file terlebih dahulu.")
 
 elif menu == "Cara Penggunaan":
     st.header("📘 Cara Penggunaan Litearn")
@@ -179,7 +182,8 @@ elif menu == "Kontak Kami":
     st.markdown("""
     📧 **Email:** <a href="mailto:litearn_ai@gmail.com">litearn_ai@gmail.com</a>  
     🌐 **Website:** <a href="https://litearn.streamlit.app" target="_blank">https://litearn.streamlit.app</a>  
-    💬 **Instagram:** <a href="https://instagram.com/litearn.ai" target="_blank">@litearn.ai</a>
+    💬 **Instagram:** <a href="https://instagram.com/litearn.ai" target="_blank">@litearn.ai</a>  
+    💬 **WhatsApp:** <a href="https://wa.me/6282283292897" target="_blank">+62 822-8329-2897</a>
     """, unsafe_allow_html=True)
 
 elif menu == "Tentang":
@@ -195,7 +199,7 @@ elif menu == "Tentang":
 # ============ FLOATING WHATSAPP BUTTON ============ #
 st.markdown("""
 <div class="whatsapp-float">
-    <a href="https://wa.me/6281234567890" target="_blank">
+    <a href="https://wa.me/6282283292897" target="_blank">
         <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg">
     </a>
 </div>
