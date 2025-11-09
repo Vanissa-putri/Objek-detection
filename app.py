@@ -10,7 +10,7 @@ import os
 # ============ CONFIG ============ #
 st.set_page_config(page_title="Litearn - AI Edu App", page_icon="📚", layout="wide")
 
-# Background image setup
+# ============ BACKGROUND SETUP ============ #
 def set_bg_image(image_file):
     if os.path.exists(image_file):
         with open(image_file, "rb") as file:
@@ -23,23 +23,46 @@ def set_bg_image(image_file):
             background-position: center;
             background-attachment: fixed;
         }}
+        /* ======= TEXT COLOR ======= */
+        h1, h2, h3, h4, h5, h6, p, label, span {{
+            color: white !important;
+        }}
+        /* ======= SIDEBAR STYLE ======= */
+        [data-testid="stSidebar"] {{
+            background-color: rgba(0, 0, 0, 0.4);
+            color: white;
+        }}
+        [data-testid="stSidebar"] label, [data-testid="stSidebar"] p {{
+            color: white !important;
+        }}
+        textarea, input, .stTextArea textarea {{
+            color: black !important;
+            background-color: #ffffffaa !important;
+        }}
         </style>
         """
         st.markdown(page_bg, unsafe_allow_html=True)
 
 set_bg_image("assets/bg-litearn.jpg")
 
-# Header logo
-st.image("assets/logo.png", width=200)
-st.markdown("<h1 style='text-align:center; color:#3E64FF;'>LITEARN - Smart Learning Assistant</h1>", unsafe_allow_html=True)
-st.markdown("### Membantu mahasiswa memahami materi kuliah dengan cepat dan efisien 💡")
+# ============ HEADER ============ #
+col1, col2 = st.columns([1, 4])
+with col1:
+    st.image("assets/logo.png", width=120, use_container_width=False, caption="")
+with col2:
+    st.markdown(
+        "<h1 style='color:white; margin-top:30px;'>LITEARN - Smart Learning Assistant</h1>",
+        unsafe_allow_html=True,
+    )
+st.markdown("<h3 style='color:white;'>Membantu mahasiswa memahami materi kuliah dengan cepat dan efisien 💡</h3>", unsafe_allow_html=True)
 
-# Sidebar menu
+# ============ SIDEBAR MENU ============ #
 menu = st.sidebar.radio("Navigasi", ["Ringkasan Materi", "Cara Penggunaan", "Bantuan", "Kontak Kami", "Tentang"])
 
+# ============ MAIN CONTENT ============ #
 if menu == "Ringkasan Materi":
     st.header("📚 Ringkasan Materi")
-    st.write("Unggah atau tempel materi kuliah lalu klik **Buat Ringkasan**.")
+    st.markdown("<p>Unggah atau tempel materi kuliah lalu klik <b>Buat Ringkasan</b>.</p>", unsafe_allow_html=True)
 
     source = st.radio("Sumber materi", ["Tempel teks", "Upload file (.txt, .pdf, .docx, .jpg, .png)"])
 
