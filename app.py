@@ -117,7 +117,7 @@ if menu == "Ringkasan Materi":
 
             st.subheader("🧾 Hasil Ringkasan:")
             st.markdown(f"""
-            <div style="
+            <div id="summary-box" style="
                 background-color: #ffffff;
                 color: black;
                 padding: 20px;
@@ -130,15 +130,17 @@ if menu == "Ringkasan Materi":
             </div>
             """, unsafe_allow_html=True)
 
-            # Tombol copy / download ringkasan
-            st.download_button(
-                label="📋 Copy / Download Ringkasan",
-                data=summary,
-                file_name="ringkasan.txt",
-                mime="text/plain"
-            )
+            # Tombol copy ringkasan
+            st.markdown(f"""
+            <button onclick="navigator.clipboard.writeText(`{summary}`)">📋 Copy Ringkasan</button>
+            <script>
+            const btn = document.querySelector("button");
+            btn.addEventListener("click", () => {{
+                alert("Ringkasan berhasil disalin ke clipboard!");
+            }});
+            </script>
+            """, unsafe_allow_html=True)
 
-            st.info("✨ Ingin hasil ringkasan lebih akurat dan detail? Hubungi kami untuk fitur Premium!")
     else:
         st.info("Masukkan teks atau upload file terlebih dahulu.")
 
