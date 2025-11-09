@@ -1,4 +1,11 @@
-streamlit>=1.20
+streamlit
+pytesseract
+Pillow
+pdfplumber
+python-docx
+docx2txt
 pandas
-transformers>=4.20  # optional (hanya kalau mau local summarization heavy)
-torch                # optional - diperlukan jika transformers dipakai
+numpy
+openai
+transformers
+torch
