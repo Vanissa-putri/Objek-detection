@@ -99,6 +99,7 @@ if menu == "Ringkasan Materi":
 
     text = ""
 
+    # Input teks atau upload file
     if source == "Tempel teks":
         text = st.text_area("Tempel teks / artikel / bab buku di sini", height=250)
     else:
@@ -113,12 +114,15 @@ if menu == "Ringkasan Materi":
             else:
                 text = read_file_content(uploaded_file)
 
+    # Proses ringkasan
     if text.strip():
         if st.button("🔍 Buat Ringkasan"):
             summary = summarize_text(text)
-            st.subheader("🧾 Hasil Ringkasan:")
 
-            # Kotak ringkasan putih solid
+            # Gabungkan menjadi 1 paragraf tanpa line break
+            summary_one_paragraph = " ".join(summary.split())
+
+            st.subheader("🧾 Hasil Ringkasan:")
             st.markdown(f"""
             <div style="
                 background-color: #ffffff;  /* putih solid */
@@ -127,15 +131,16 @@ if menu == "Ringkasan Materi":
                 border-radius: 10px;
                 border: 1px solid rgba(0,0,0,0.1);
                 box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-                white-space: pre-wrap;
+                white-space: normal;
             ">
-            {summary}
+            {summary_one_paragraph}
             </div>
             """, unsafe_allow_html=True)
 
             st.info("✨ Ingin hasil ringkasan lebih akurat dan detail? Hubungi kami untuk fitur Premium!")
     else:
         st.info("Masukkan teks atau upload file terlebih dahulu.")
+
 
 # ============ LATIHAN SOAL ============ #
 elif menu == "Latihan Soal":
