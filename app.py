@@ -35,39 +35,41 @@ st.markdown("<h1 style='text-align:center; color:#3E64FF;'>LITEARN - Smart Learn
 st.markdown("### Membantu mahasiswa memahami materi kuliah dengan cepat dan efisien 💡")
 
 # Sidebar menu
-menu = st.sidebar.radio("Navigasi", ["Beranda", "Cara Penggunaan", "Bantuan", "Kontak Kami", "Tentang"])
+menu = st.sidebar.radio("Navigasi", ["Ringkasan Materi", "Cara Penggunaan", "Bantuan", "Kontak Kami", "Tentang"])
 
-if menu == "Beranda":
-    st.header("📄 Upload Materi Kuliah")
-    st.write("Unggah file (.txt, .pdf, .docx, .jpg, .png) untuk diringkas menjadi poin-poin penting.")
+if menu == "Ringkasan Materi":
+    st.header("📚 Ringkasan Materi")
+    st.write("Unggah atau tempel materi kuliah lalu klik **Buat Ringkasan**.")
 
-    uploaded_file = st.file_uploader("Upload file", type=["txt", "pdf", "docx", "jpg", "png"])
+    source = st.radio("Sumber materi", ["Tempel teks", "Upload file (.txt, .pdf, .docx, .jpg, .png)"])
 
-    if uploaded_file:
-        if uploaded_file.type.startswith("image/"):
-            st.info("📷 File terdeteksi sebagai gambar. Mengonversi teks dari gambar...")
-            text = extract_text_from_image(uploaded_file)
-        else:
-            text = read_file_content(uploaded_file)
+    text = ""
 
-        if text.strip() == "":
-            st.warning("Tidak ditemukan teks dalam file ini.")
-        else:
-            st.success("✅ File berhasil dibaca!")
-            if st.button("🔍 Ringkas Teks"):
-                summary = summarize_text(text)
-                st.subheader("🧾 Hasil Ringkasan:")
-                st.write(summary)
-                st.markdown("---")
-                st.info("✨ Ingin hasil ringkasan lebih akurat dan mendalam? Hubungi kami untuk versi **Litearn Premium**!")
+    if source == "Tempel teks":
+        text = st.text_area("Tempel teks / artikel / bab buku di sini", height=250)
+    else:
+        uploaded_file = st.file_uploader("Upload file", type=["txt", "pdf", "docx", "jpg", "png"])
+        if uploaded_file:
+            if uploaded_file.type.startswith("image/"):
+                st.info("📷 File terdeteksi sebagai gambar. Mengonversi teks dari gambar...")
+                text = extract_text_from_image(uploaded_file)
+            else:
+                text = read_file_content(uploaded_file)
+
+    if text.strip():
+        if st.button("🔍 Buat Ringkasan"):
+            summary = summarize_text(text)
+            st.subheader("🧾 Hasil Ringkasan:")
+            st.write(summary)
+    else:
+        st.info("Masukkan teks atau upload file terlebih dahulu.")
 
 elif menu == "Cara Penggunaan":
     st.header("📘 Cara Penggunaan Litearn")
     st.markdown("""
-    1️⃣ Pilih menu **Beranda** untuk mengunggah file dokumen atau gambar.  
-    2️⃣ Litearn akan otomatis membaca isi dokumen.  
-    3️⃣ Klik tombol **Ringkas Teks** untuk mendapatkan ringkasan poin penting.  
-    4️⃣ Untuk ringkasan tingkat lanjut, hubungi kami di menu **Kontak Kami**.
+    1️⃣ Pilih menu **Ringkasan Materi** untuk mengunggah file atau menempelkan teks.  
+    2️⃣ Litearn akan otomatis membaca isi dokumen atau teks.  
+    3️⃣ Klik tombol **Buat Ringkasan** untuk mendapatkan hasilnya.
     """)
 
 elif menu == "Bantuan":
@@ -76,13 +78,12 @@ elif menu == "Bantuan":
     **Pertanyaan umum:**
     - File tidak terbaca? Pastikan formatnya `.txt`, `.pdf`, `.docx`, `.jpg`, atau `.png`.  
     - Hasil ringkasan kosong? Periksa apakah teks dalam file bisa disalin.  
-    - Masalah teknis lain? Hubungi kami di menu **Kontak Kami**.
+    - Masalah lain? Hubungi kami di menu **Kontak Kami**.
     """)
 
 elif menu == "Kontak Kami":
     st.header("📞 Hubungi Kami")
     st.markdown("""
-    Butuh bantuan atau ingin berlangganan versi premium?  
     📧 **Email:** litearn_ai@gmail.com  
     🌐 **Website:** [https://litearn.streamlit.app](https://litearn.streamlit.app)  
     💬 **Instagram:** [@litearn.ai](https://instagram.com/litearn.ai)
@@ -91,11 +92,9 @@ elif menu == "Kontak Kami":
 elif menu == "Tentang":
     st.header("ℹ️ Tentang LITEARN")
     st.markdown("""
-    **Litearn** adalah aplikasi edukasi berbasis **kecerdasan buatan (AI)**  
-    yang membantu mahasiswa memahami materi kuliah dengan cepat dan efisien.  
-    Litearn dapat merangkum buku, artikel, maupun gambar berisi teks menjadi  
-    **poin-poin penting yang mudah dipahami**, serta memiliki versi premium  
-    dengan fitur ringkasan lebih mendalam dan latihan adaptif.
+    **Litearn** adalah aplikasi edukasi berbasis **AI**  
+    yang membantu mahasiswa memahami materi kuliah dengan cepat.  
+    Litearn dapat membaca dan meringkas teks dari dokumen maupun gambar  
+    menjadi **poin-poin penting yang mudah dipahami**.
     """)
-
-    st.success("Dapat diakses melalui perangkat mobile dan web dengan tampilan sederhana.")
+    st.success("Dapat digunakan di perangkat mobile dan web dengan tampilan sederhana.")
