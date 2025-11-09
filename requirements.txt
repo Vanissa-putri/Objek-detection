@@ -1,7 +1,5 @@
 streamlit
-pytesseract
-Pillow
-transformers
-torch
 PyPDF2
 python-docx
+pillow
+pytesseract
