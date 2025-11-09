@@ -34,18 +34,6 @@ def set_bg_image(image_file):
             color: black !important;
             background-color: #ffffffcc !important;
         }}
-        .whatsapp-float {{
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 100;
-        }}
-        .whatsapp-float img {{
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            box-shadow: 0px 2px 8px rgba(0,0,0,0.3);
-        }}
         </style>
         """
         st.markdown(bg_css, unsafe_allow_html=True)
@@ -61,7 +49,18 @@ with col2:
 st.markdown("<h3>Membantu mahasiswa memahami materi kuliah dengan cepat dan efisien 💡</h3>", unsafe_allow_html=True)
 
 # ============ MENU ============ #
-menu = st.sidebar.radio("Navigasi", ["Ringkasan Materi", "Latihan Soal", "Cara Penggunaan", "Bantuan", "Kontak Kami", "Tentang"])
+menu = st.sidebar.radio(
+    "Navigasi", 
+    [
+        "Ringkasan Materi",
+        "Latihan Soal",
+        "Cara Penggunaan",
+        "Bantuan",
+        "Pengaduan",
+        "Kontak Kami",
+        "Tentang"
+    ]
+)
 
 # ============ RINGKASAN ============ #
 if menu == "Ringkasan Materi":
@@ -152,6 +151,27 @@ elif menu == "Bantuan":
     - Untuk hasil lebih bagus, gunakan versi **Premium** (hubungi kami).
     """)
 
+# ============ PENGADUAN ============ #
+elif menu == "Pengaduan":
+    st.header("📩 Pengaduan & Masukan Pengguna")
+    st.markdown("""
+    Jika kamu mengalami kendala, bug, atau ingin memberi saran pengembangan aplikasi,
+    silakan isi formulir di bawah ini.  
+    Tim Litearn akan membaca setiap pesan yang masuk 💬
+    """)
+
+    nama = st.text_input("Nama Lengkap")
+    email = st.text_input("Email Aktif")
+    subjek = st.text_input("Subjek Pesan")
+    pesan = st.text_area("Isi Pesan atau Keluhan", height=150)
+
+    if st.button("Kirim Pesan"):
+        if nama and email and pesan:
+            st.success("✅ Pesan berhasil dikirim! Terima kasih atas masukannya 🙌")
+        else:
+            st.warning("⚠️ Mohon isi semua kolom sebelum mengirim pesan.")
+
+# ============ KONTAK ============ #
 elif menu == "Kontak Kami":
     st.header("📞 Hubungi Kami")
     st.markdown("""
@@ -172,26 +192,12 @@ elif menu == "Kontak Kami":
     🌐 **Website:** <a class="contact-link" href="https://litearn.streamlit.app" target="_blank">litearn.streamlit.app</a>
     """, unsafe_allow_html=True)
 
-
-# ============ PENGADUAN ============ #
-elif menu == "Pengaduan":
-    st.header("📩 Pengaduan & Masukan Pengguna")
+# ============ TENTANG ============ #
+elif menu == "Tentang":
+    st.header("ℹ️ Tentang LITEARN")
     st.markdown("""
-    Jika kamu mengalami kendala, bug, atau ingin memberi saran pengembangan aplikasi,
-    silakan isi formulir di bawah ini.  
-    Tim Litearn akan membaca setiap pesan yang masuk 💬
+    Litearn adalah aplikasi edukasi berbasis **AI lokal**  
+    yang membantu mahasiswa memahami materi kuliah,  
+    membuat ringkasan otomatis, dan latihan soal interaktif.  
     """)
-
-    nama = st.text_input("Nama Lengkap")
-    email = st.text_input("Email Aktif")
-    subjek = st.text_input("Subjek Pesan")
-    pesan = st.text_area("Isi Pesan atau Keluhan", height=150)
-
-    if st.button("Kirim Pesan"):
-        if nama and email and pesan:
-            # (Simulasi pengiriman)
-            st.success("✅ Pesan berhasil dikirim! Terima kasih atas masukannya 🙌")
-        else:
-            st.warning("⚠️ Mohon isi semua kolom sebelum mengirim pesan.")
-
-
+    st.success("Dari ringkasan jadi pemahaman. 🚀")
