@@ -5,71 +5,85 @@ import pytesseract
 import io
 import re
 
-# ======== Membaca isi file teks / pdf / docx ======== #
+# ======== Fungsi untuk membaca file ======== #
 def read_file_content(uploaded_file):
-    """Membaca isi file berdasarkan jenisnya"""
-    file_type = uploaded_file.type
+    """
+    Membaca isi dari file txt, pdf, atau docx.
+    Mengembalikan teks dalam bentuk string.
+    """
+    text = ""
+    filename = uploaded_file.name.lower()
 
-    if file_type == "text/plain":
-        return uploaded_file.read().decode("utf-8")
+    # File TXT
+    if filename.endswith(".txt"):
+        text = uploaded_file.read().decode("utf-8", errors="ignore")
 
-    elif file_type == "application/pdf":
-        pdf_reader = PdfReader(uploaded_file)
+    # File PDF
+    elif filename.endswith(".pdf"):
+        reader = PdfReader(uploaded_file)
         text = ""
-        for page in pdf_reader.pages:
-            text += page.extract_text() or ""
-        return text
+        for page in reader.pages:
+            page_text = page.extract_text()
+            if page_text:
+                text += page_text + "\n"
 
-    elif file_type in [
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/msword"
-    ]:
+    # File DOCX
+    elif filename.endswith(".docx"):
         doc = docx.Document(uploaded_file)
-        return "\n".join([para.text for para in doc.paragraphs])
+        text = "\n".join([para.text for para in doc.paragraphs])
 
     else:
-        return "⚠️ Format file tidak didukung."
+        text = "Format file tidak didukung. Harap upload .txt, .pdf, atau .docx"
+
+    return clean_text(text)
 
 
-# ======== Ekstraksi teks dari gambar ======== #
-def extract_text_from_image(uploaded_image):
-    """Mengubah gambar menjadi teks menggunakan OCR"""
-    try:
-        image = Image.open(uploaded_image)
-        text = pytesseract.image_to_string(image, lang="ind+eng")
-        return text.strip()
-    except Exception as e:
-        return f"⚠️ Gagal membaca teks dari gambar: {str(e)}"
+# ======== Fungsi untuk membersihkan teks ======== #
+def clean_text(text):
+    """
+    Membersihkan teks dari karakter aneh atau berulang.
+    """
+    text = re.sub(r'\s+', ' ', text)
+    text = text.replace('\x0c', '').strip()
+    return text
 
 
-# ======== Fungsi ringkasan teks sederhana ======== #
+# ======== Fungsi ringkasan sederhana ======== #
 def summarize_text(text, max_sentences=5):
-    """Meringkas teks menjadi beberapa kalimat penting"""
+    """
+    Meringkas teks sederhana berdasarkan kalimat penting (tanpa AI model eksternal).
+    """
     if not text or len(text.split()) < 30:
         return "Teks terlalu pendek untuk diringkas."
 
-    # Hilangkan karakter aneh & split jadi kalimat
-    text = re.sub(r'\s+', ' ', text)
     sentences = re.split(r'(?<=[.!?]) +', text)
+    scored = {}
 
-    # Hitung frekuensi kata (sederhana)
+    # Hitung frekuensi kata
     words = re.findall(r'\w+', text.lower())
     freq = {}
-    for word in words:
-        if word not in freq:
-            freq[word] = 1
-        else:
-            freq[word] += 1
+    for w in words:
+        freq[w] = freq.get(w, 0) + 1
 
-    # Skor tiap kalimat berdasar kata penting
-    sentence_scores = {}
-    for sentence in sentences:
-        for word in sentence.lower().split():
-            if word in freq:
-                sentence_scores[sentence] = sentence_scores.get(sentence, 0) + freq[word]
+    # Skor tiap kalimat
+    for sent in sentences:
+        sent_score = sum(freq.get(w.lower(), 0) for w in re.findall(r'\w+', sent))
+        scored[sent] = sent_score
 
-    # Ambil kalimat dengan skor tertinggi
-    ranked_sentences = sorted(sentence_scores, key=sentence_scores.get, reverse=True)
-    summary = " ".join(ranked_sentences[:max_sentences])
-
+    # Ambil kalimat terbaik
+    ranked = sorted(scored, key=scored.get, reverse=True)
+    summary = " ".join(ranked[:max_sentences])
     return summary.strip()
+
+
+# ======== Fungsi ekstraksi teks dari gambar ======== #
+def extract_text_from_image(uploaded_image):
+    """
+    Mengambil teks dari gambar menggunakan OCR (pytesseract).
+    """
+    try:
+        image = Image.open(uploaded_image)
+        text = pytesseract.image_to_string(image, lang='eng+ind')
+        return clean_text(text) if text.strip() else "Tidak ada teks yang terdeteksi pada gambar."
+    except Exception as e:
+        return f"Gagal membaca teks dari gambar: {str(e)}"
