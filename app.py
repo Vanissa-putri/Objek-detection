@@ -24,11 +24,8 @@ def set_bg_image(image_file):
             background-attachment: fixed;
         }}
 
-        /* ======= TEXT COLOR (semua teks utama putih) ======= */
-        .stMarkdown, .stMarkdown p, .stMarkdown span, .stMarkdown li, .stMarkdown strong {{
-            color: white !important;
-        }}
-        h1, h2, h3, h4, h5, h6 {{
+        /* ======= TEXT COLOR ======= */
+        h1, h2, h3, h4, h5, h6, p, label, span {{
             color: white !important;
         }}
 
@@ -113,7 +110,7 @@ elif menu == "Cara Penggunaan":
 elif menu == "Bantuan":
     st.header("Bantuan")
     st.markdown("""
-    **Pertanyaan umum:**  
+    **Pertanyaan umum:**
     - File tidak terbaca? Pastikan formatnya `.txt`, `.pdf`, `.docx`, `.jpg`, atau `.png`.  
     - Hasil ringkasan kosong? Periksa apakah teks dalam file bisa disalin.  
     - Masalah lain? Hubungi kami di menu [**Kontak Kami**](#kontak-kami).
