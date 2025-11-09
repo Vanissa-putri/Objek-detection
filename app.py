@@ -108,7 +108,7 @@ elif menu == "Cara Penggunaan":
     """)
 
 elif menu == "Bantuan":
-    st.header("🆘 Bantuan")
+    st.header("Bantuan")
     st.markdown("""
     **Pertanyaan umum:**
     - File tidak terbaca? Pastikan formatnya `.txt`, `.pdf`, `.docx`, `.jpg`, atau `.png`.  
