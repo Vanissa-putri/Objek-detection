@@ -1,13 +1,10 @@
-streamlit
-pandas
-numpy
-PyPDF2
-python-docx
-pytesseract
-Pillow
-transformers
-torch
-sentencepiece
-openpyxl
-tqdm
-regex
+streamlit           # jika mau dipakai di Streamlit
+transformers        # untuk HuggingFace summarization pipeline
+torch               # backend untuk transformers
+pandas              # untuk membaca CSV / Excel
+python-docx         # untuk membaca file DOCX
+PyPDF2              # untuk membaca file PDF
+pytesseract         # untuk ekstraksi teks dari gambar
+Pillow              # untuk membuka file gambar
+openpyxl            # untuk membaca XLSX
+xlrd                # untuk membaca XLS / XLSX lama
