@@ -44,35 +44,43 @@ def extract_text_from_image(file):
     return text
 
 # ============ RINGKASAN TEKS ============ #
-def summarize_text(text):
+def summarize_text(text, chunk_size=500, overlap=50):
     """
-    Membagi teks panjang menjadi beberapa chunk agar model summarizer
-    bisa merangkum semua paragraf tanpa kehilangan info.
+    Membagi teks panjang menjadi beberapa chunk agar ringkasan lebih lengkap.
     """
     from transformers import pipeline
 
     summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
     
-    # Split teks menjadi paragraf
-    paragraphs = [p.strip() for p in text.split("\n") if p.strip()]
-    
+    words = text.split()
     summaries = []
-    for para in paragraphs:
-        try:
-            summary_chunk = summarizer(para, max_length=250, min_length=50, do_sample=False)[0]['summary_text']
-            summaries.append(summary_chunk)
-        except Exception as e:
-            summaries.append(para)  # fallback kalau error
+    start = 0
 
-    # Gabungkan semua ringkasan chunk
-    final_summary = "\n".join(summaries)
+    while start < len(words):
+        end = start + chunk_size
+        chunk_words = words[start:end]
+        chunk_text = " ".join(chunk_words)
+
+        try:
+            summary_chunk = summarizer(
+                chunk_text,
+                max_length=250,
+                min_length=100,
+                do_sample=False
+            )[0]['summary_text']
+            summaries.append(summary_chunk)
+        except Exception:
+            summaries.append(chunk_text)  # fallback
+
+        start += chunk_size - overlap
+
+    final_summary = " ".join(summaries)
     return final_summary
 
 # ============ GENERATE QUIZ ============ #
 def generate_quiz_from_text(text, num_questions=5):
     """
     Membuat pertanyaan pilihan ganda sederhana dari teks.
-    Implementasi dasar: memecah kalimat & mengambil kata penting.
     """
     import random
     import re
