@@ -152,14 +152,26 @@ elif menu == "Bantuan":
     - Untuk hasil lebih bagus, gunakan versi **Premium** (hubungi kami).
     """)
 
-# ============ KONTAK ============ #
 elif menu == "Kontak Kami":
     st.header("📞 Hubungi Kami")
     st.markdown("""
-    📧 **Email:** litearn_ai@gmail.com  
-    💬 **WhatsApp:** [Chat Kami](https://wa.me/6282283292897)  
-    🌐 **Website:** [https://litearn.streamlit.app](https://litearn.streamlit.app)
-    """)
+    <style>
+    a.contact-link {
+        color: white !important;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    a.contact-link:hover {
+        color: #00BFFF !important;
+        text-decoration: underline;
+    }
+    </style>
+
+    📧 **Email:** <a class="contact-link" href="mailto:litearn_ai@gmail.com">litearn_ai@gmail.com</a>  
+    💬 **WhatsApp:** <a class="contact-link" href="https://wa.me/6282283292897" target="_blank">Chat Kami</a>  
+    🌐 **Website:** <a class="contact-link" href="https://litearn.streamlit.app" target="_blank">litearn.streamlit.app</a>
+    """, unsafe_allow_html=True)
+
 
 # ============ TENTANG ============ #
 elif menu == "Tentang":
